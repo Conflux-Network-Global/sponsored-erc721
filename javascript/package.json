@@ -8,6 +8,6 @@
     "js-conflux-sdk": "^1.0.1"
   },
   "scripts": {
-    "run": "node example"
+    "test": "node example"
   }
 }

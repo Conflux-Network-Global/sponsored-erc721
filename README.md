@@ -30,17 +30,17 @@ Sample function calls:
 ```
 //for deploying contract
 node deploy PRIVATE_KEY1
-node sponsor PRIVATE_KEY2 <insert new contract address>
-node checkSponsor <insert new contract address>
-node addSponsored PRIVATE_KEY1 <insert new contract address> 0x15fd1E4F13502b1a8BE110F100EC001d0270552d
-node isSponsored <insert new contract address> 0x15fd1E4F13502b1a8BE110F100EC001d0270552d
+node sponsor PRIVATE_KEY2 0x8aa092e0660c59eab456efdbd39ae8d158e9a95b
+node checkSponsor 0x8aa092e0660c59eab456efdbd39ae8d158e9a95b
+node addSponsored PRIVATE_KEY1 0x8aa092e0660c59eab456efdbd39ae8d158e9a95b 0x15fd1E4F13502b1a8BE110F100EC001d0270552d
+node isSponsored 0x8aa092e0660c59eab456efdbd39ae8d158e9a95b 0x15fd1E4F13502b1a8BE110F100EC001d0270552d
 
 //for destroying contract
-node destroy PRIVATE_KEY1 <insert new contract address>
+node destroy PRIVATE_KEY1 0x8aa092e0660c59eab456efdbd39ae8d158e9a95b
 ```
 Note: `PRIVATE_KEY1` is the creator of the contract and is the default admin, so it is used in the `addSponsored` command. `PRIVATE_KEY2` is used to represent any sponsor.
 
-Contract address (testnet): \<insert new contract address\>
+Contract address (testnet): 0x8aa092e0660c59eab456efdbd39ae8d158e9a95b
 
 #### Resources
 Sponsorship contract interface: https://github.com/Conflux-Chain/conflux-rust/blob/master/internal_contract/contracts/SponsorWhitelistControl.sol  

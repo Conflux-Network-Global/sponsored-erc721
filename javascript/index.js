@@ -2,18 +2,18 @@ const { Conflux } = require("js-conflux-sdk");
 require("dotenv").config();
 const abi = require("./abi.json");
 
-const cfx = new Conflux({ url: process.env.ENDPOINT });
-const contract = cfx.Contract({});
-
 class NFT {
-  constructor(endpoint, address) {
-    this.cfx = new Conflux(endpoint);
+  constructor(url, address) {
+    this.cfx = new Conflux({ url });
     this.account = this.cfx.wallet.addPrivateKey(process.env.PRIVATE_KEY);
     this.contract = this.cfx.Contract({ abi, address });
   }
 
-  async mint(id, address) {
-    return this.contract.mint(address, id).executed();
+  async mint(address, id) {
+    return this.contract
+      .safeMint(address, id)
+      .sendTransaction({ from: this.account })
+      .executed();
   }
 
   async getAssets(userAddr) {
