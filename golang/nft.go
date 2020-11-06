@@ -3,7 +3,6 @@ package nft
 import (
 	conflux "github.com/Conflux-Chain/go-conflux-sdk"
 	"github.com/Conflux-Chain/go-conflux-sdk/types"
-  "github.com/ethereum/go-ethereum/common"
 	"github.com/joho/godotenv"
 	"os"
   "math/big"
@@ -32,7 +31,7 @@ func New(url string, addr string, passphrase string) (NFT, error) {
 
 	//set up account
 	account := conflux.NewAccountManager("./keystore")
-  _, err = account.GetDefault() //get dfault account
+  _, err = account.GetDefault() //get default account
 	if err != nil {
     //fallback to importing key if ./keystore doesn't exist
     _, err = account.ImportKey(os.Getenv("PRIVATE_KEY"), passphrase)
@@ -40,6 +39,10 @@ func New(url string, addr string, passphrase string) (NFT, error) {
       return NFT{}, err
     }
 	}
+  err = account.UnlockDefault(passphrase)
+  if err != nil {
+    return NFT{}, err
+  }
 
 
 	client.SetAccountManager(account)
@@ -58,7 +61,7 @@ func New(url string, addr string, passphrase string) (NFT, error) {
 }
 
 func (nft NFT) Mint(addr string, id string) (*types.Hash, error) {
-  a := common.Address(addr)
+  a := types.Address(addr)
   i := new(big.Int)
   i, ok := i.SetString(id, 10)
   if !ok {
@@ -66,6 +69,28 @@ func (nft NFT) Mint(addr string, id string) (*types.Hash, error) {
     return &null, fmt.Errorf("Invalid ID")
   }
 
-  txhash, err := nft.Contract.SendTransaction(nil, "safeMint", a, i, byte(0))
+  txhash, err := nft.Contract.SendTransaction(nil, "safeMint", a.ToCommonAddress(), i)
   return txhash, err
+}
+
+func (nft NFT) GetAssets(addr string) ([]big.Int, error) {
+  a := types.Address(addr)
+
+  balance := &big.Int{}
+  err := nft.Contract.Call(nil, &balance, "balanceOf", a.ToCommonAddress())
+  if err != nil {
+    return []big.Int{}, err
+  }
+
+  ids := make([]big.Int, balance.Int64())
+  for i:= 0; int64(i) < balance.Int64(); i++ {
+    id := &big.Int{}
+    err := nft.Contract.Call(nil, &id, "tokenOfOwnerByIndex", a.ToCommonAddress(), big.NewInt(int64(i)))
+    if err != nil {
+      return []big.Int{}, err
+    }
+    ids[i] = *id
+  }
+
+  return ids, err
 }

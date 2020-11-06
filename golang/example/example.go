@@ -12,10 +12,17 @@ func main(){
     return
   }
 
-  txhash, err := NFT.Mint("0x18e33e342b0f3fFE0b0193950FE9F2e0378a81Ee", "2")
+  // txhash, err := NFT.Mint("0x18e33e342b0f3fFE0b0193950FE9F2e0378a81Ee", "2")
+  // if err != nil {
+  //   fmt.Println(err)
+  //   return
+  // }
+  // fmt.Println("Mint TX hash:", txhash)
+
+  ids, err := NFT.GetAssets("0x18e33e342b0f3fFE0b0193950FE9F2e0378a81Ee")
   if err != nil {
     fmt.Println(err)
     return
   }
-  fmt.Println("Mint TX hash:", txhash)
+  fmt.Println("NFT IDs:", ids)
 }
