@@ -9,7 +9,36 @@ The above illustrates a basic PoC of integrating NFTs into a game. The game only
 This repository details the middleware layer of providing easy to use/integrate functions for games to connect NFTs to a game.
 
 ## Contract
-ERC721 Contract from [OpenZeppelin](https://docs.openzeppelin.com/contracts/3.x/)
+ERC721 Contract from [OpenZeppelin](https://docs.openzeppelin.com/contracts/3.x/) with slight modification to expose the mint functionality:
+```solidity
+// SPDX-License-Identifier: WTFPL
+
+pragma solidity ^0.6.0;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+
+contract NFTBase is ERC721 {
+    address private owner;
+
+    constructor() ERC721("MyCollectible", "MCO") public {
+      owner = msg.sender;
+    }
+
+    //exposing the safe mint function
+    function safeMint(address to, uint256 tokenId) public {
+      require(msg.sender == owner, "NFTBase: Only owner can mint");
+      _safeMint(to, tokenId);
+    }
+
+    function safeMint(address to, uint256 tokenId, bytes calldata _data) public {
+      require(msg.sender == owner, "NFTBase: Only owner can mint");
+      _safeMint(to, tokenId, _data);
+    }
+
+}
+```
+
+Then the contract is:
 * Compiled using conflux-truffle (`cfxtruffle compile`)
 * ABI/bytecode used for deployment
 
@@ -57,11 +86,34 @@ Documentation: https://developer.conflux-chain.org/docs/conflux-rust/internal_co
 ## Packages
 Once the previous steps are followed to deploying a smart contract, the following packages in go or javascript can be used to interact with the contract to mint and read data.
 
+All packages follow the same basic format for functions (Note: Function capitalization may be different depending on the package. See examples for usage):
+
+Name | Input | Output | Functionality
+ -- | -- | -- | --
+ _`constructor`_ | `endpoint`, `NFT address` | `nft object` | Constructor for creating the NFT instance for use |
+ `mint` |  `user address`, `nft ID` | `transaction hash` | Mint NFT (of specific ID) to a user's wallet
+ `getAssets` | `user address` | `array of nft IDs` | Get a list of NFT IDs for the specific user
+
+A `.env` file is required to provide the Conflux Network private key for the NFT smart contract deployer.
+```
+PRIVATE_KEY=<insert-private-key>
+```
+
 ### Javascript
 ```
 yarn add @aalu1418/sponsored-erc721
 ```
+[Example + Usage](./examples/js/example.js)
+
 ### Go
 ```
 go get github.com/Conflux-Network-Global/sponsored-erc721/golang
 ```
+[Example + Usage](./examples/go/example.go)
+
+### Other Languages
+There is plenty of room for improvement!
+* Python
+* .NET
+* C++
+* etc

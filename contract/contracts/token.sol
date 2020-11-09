@@ -11,7 +11,7 @@ contract NFTBase is ERC721 {
       owner = msg.sender;
     }
 
-    //exposing the saf
+    //exposing the safe mint functionality
     function safeMint(address to, uint256 tokenId) public {
       require(msg.sender == owner, "NFTBase: Only owner can mint");
       _safeMint(to, tokenId);
