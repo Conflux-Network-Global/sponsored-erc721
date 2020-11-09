@@ -1,0 +1,12 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "main": "example.js",
+  "license": "MIT",
+  "dependencies": {
+    "@aalu1418/sponsored-erc721": "^0.0.1"
+  },
+  "scripts": {
+    "run-example": "node example.js"
+  }
+}
