@@ -1,4 +1,4 @@
-module github.com/Conflux-Network-Global/nft
+module github.com/Conflux-Network-Global/sponsored-erc721/golang
 
 go 1.15
 
